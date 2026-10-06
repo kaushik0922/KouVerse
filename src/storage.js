@@ -1,0 +1,5 @@
+import {supabase,cloudEnabled} from './supabase'
+const KEY='kouverse_state_v1'
+export const defaults={todos:[],syllabus:[],notes:[],results:[],streakDays:[],reviews:{},settings:{theme:'dark'},pomodoro:{work:25,break:5}}
+export async function loadState(){const local=JSON.parse(localStorage.getItem(KEY)||'null')||defaults;if(!cloudEnabled)return local;const {data:{user}}=await supabase.auth.getUser();if(!user)return local;const {data}=await supabase.from('user_state').select('payload').eq('user_id',user.id).maybeSingle();return data?.payload?{...defaults,...data.payload}:local}
+export async function saveState(s){localStorage.setItem(KEY,JSON.stringify(s));if(!cloudEnabled)return;const {data:{user}}=await supabase.auth.getUser();if(user)await supabase.from('user_state').upsert({user_id:user.id,payload:s,updated_at:new Date().toISOString()},{onConflict:'user_id'})}
