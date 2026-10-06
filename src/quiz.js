@@ -1,0 +1,8 @@
+const ri=(a,b)=>Math.floor(Math.random()*(b-a+1))+a
+const shuffle=a=>[...a].sort(()=>Math.random()-.5)
+const opt=(ans,spread=10)=>shuffle([ans,...new Set(Array.from({length:8},()=>Math.max(0,ans+ri(-spread,spread))).filter(x=>x!==ans))].slice(0,4))
+const q=(prompt,answer)=>({prompt,answer:String(answer),options:opt(answer,Math.max(5,Math.floor(Math.abs(answer)*.08))).map(String)})
+export const quizTypes=[
+{id:'squares125',title:'Squares 1–125',count:10},{id:'cubeRoot',title:'Cubes & Cube Roots',count:10},{id:'cubes10',title:'Cubes 1–10',count:10},{id:'squareRoot',title:'Square Roots',count:10},
+{id:'mul5',title:'5-number × 5',count:5},{id:'mul15',title:'5-number × 15',count:5},{id:'mul25',title:'5-number × 25',count:5},{id:'mul11',title:'3-number × 11',count:3},{id:'mul999101',title:'8-number × 9 / 99 / 101',count:8},{id:'mul125',title:'Multiply by 125',count:5}]
+export function generateQuiz(type,count){const out=[];while(out.length<count){let n,a,p;if(type==='squares125'){n=ri(1,125);a=n*n;p=n+'² = ?'}else if(type==='cubeRoot'){n=ri(2,15);if(Math.random()>.5){a=n**3;p=n+'³ = ?'}else{a=n;p='∛'+n**3+' = ?'}}else if(type==='cubes10'){n=ri(1,10);a=n**3;p=n+'³ = ?'}else if(type==='squareRoot'){n=ri(2,40);a=n;p='√'+n*n+' = ?'}else{const digits=type==='mul11'?3:type==='mul999101'?8:5;n=ri(10**(digits-1),10**digits-1);const m=type==='mul5'?5:type==='mul15'?15:type==='mul25'?25:type==='mul11'?11:type==='mul125'?125:[9,99,101][ri(0,2)];a=n*m;p=n+' × '+m+' = ?'}out.push(q(p,a))}return out}
